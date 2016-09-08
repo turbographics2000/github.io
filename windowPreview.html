@@ -3,7 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>画面共有App画面</title>
-        <link rel="stylesheet" href="app.css">
+        <link rel="stylesheet" href="css/app.css">
+        <script src="js/xhr.js"></script>
+        <script src="js/adapter.js"></script>
+        <script src="https://skyway.io/dist/0.3/peer.js"></script>
+        <script src="https://enkarz.me:3002/socket.io/socket.io.js"></script>
     </head>
     <body id="selectCaptureWindowDialogBody">
         <div id="container" stype="display: none">
@@ -14,15 +18,9 @@
                 <span>共有するウィンドウを変更</span>
             </div>
         </div>
-
         <div id="selectCaptureWindowDialog">
         </div>
-        <script src="socket.io-1.4.5.js"></script>
-        <!--<script src="opentok.js"></script>-->
-        <script src="xhr.js"></script>
-        <script src="adapter.js"></script>
-        <script src="skyway_electron.js"></script>
-        <script src="windowPreview.js"></script>
+        <script src="js/windowPreview.js"></script>
     </body>
 </html>
 
