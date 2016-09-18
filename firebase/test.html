@@ -25,8 +25,7 @@
                 console.log(error.code, error.message);
             });
             const rootRef = firebase.database().ref(); // root
-            const myRootRef = rootRef.push();
-            myRootRef.set({
+            rootRef.set({
                 rooms: {},
                 users: {}
             }).then(function() {
