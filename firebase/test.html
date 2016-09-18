@@ -5,17 +5,25 @@
     <body>
         <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
         <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyB8o3ftIYIh4nMkAeC_Bazb9AVD3R2wm3w",
-            authDomain: "webrtc-signaling-e166a.firebaseapp.com",
-            databaseURL: "https://webrtc-signaling-e166a.firebaseio.com",
-            storageBucket: "webrtc-signaling-e166a.appspot.com",
-            messagingSenderId: "320070003020"
-        };
-        firebase.initializeApp(config);
-        </script>
-        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyB8o3ftIYIh4nMkAeC_Bazb9AVD3R2wm3w",
+                authDomain: "webrtc-signaling-e166a.firebaseapp.com",
+                databaseURL: "https://webrtc-signaling-e166a.firebaseio.com",
+                storageBucket: "webrtc-signaling-e166a.appspot.com",
+                messagingSenderId: "320070003020"
+            };
+            firebase.initializeApp(config);
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    console.log('sgin in');
+                } else {
+                    console.log('sgin out');
+                }
+            });
+            firebase.auth().signInAnonymously().catch(function(error) {
+                console.log(error.code, error.message);
+            });
             const rootRef = firebase.database().ref(); // root
             const myRootRef = rootRef.push();
             myRootRef.set({
