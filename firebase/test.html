@@ -16,7 +16,7 @@
             firebase.initializeApp(config);
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
-                    console.log('sgin in');
+                    console.log('sgin in', user);
                 } else {
                     console.log('sgin out');
                 }
