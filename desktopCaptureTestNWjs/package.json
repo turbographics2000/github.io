@@ -1,5 +1,5 @@
 {
-    "name": "nwscreenchooseDesktopMedia",
+    "name": "NW.js desktop capture",
     "version": "0.0.1",
     "main": "index.html",
     "window": {
