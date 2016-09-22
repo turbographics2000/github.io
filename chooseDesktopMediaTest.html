@@ -9,11 +9,14 @@
         <script>
             chrome.runtime.sendMessage('godkfihnmdhpppnpibeiieemdcbhojaa','getStreamId', streamId => {
                 navigator.mediaDevices.getUserMedia({
-                    mandatory: {
-                        chromeMediaSource: 'desktop', 
-                        chromeMediaSourceId: streamId, 
-                        maxWidth: 1920, 
-                        maxHeight: 1080
+                    audio: false, 
+                    video: {
+                        mandatory: {
+                            chromeMediaSource: 'desktop',
+                            chromeMediaSourceId: sourceId,
+                            maxWidth: 1920,
+                            maxHeight: 1080,
+                        }
                     }
                 }).then(stream => {
                     vid.srcObject = stream;
