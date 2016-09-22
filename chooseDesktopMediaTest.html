@@ -5,8 +5,7 @@
         <title>chooseDesktopMediaTest</title>
     </head>
     <body>
-        <video id="vid">
-
+        <video id="vid"></video>
         <script>
             chrome.runtime.sendMessage('godkfihnmdhpppnpibeiieemdcbhojaa','getStreamId', streamId => {
                 navigator.getUserMeida({
@@ -20,5 +19,6 @@
                     vid.srcObject = stream;
                 });
             });
+        </script>
     </body>
 </html>
