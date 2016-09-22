@@ -1,5 +1,5 @@
 {
-    "name": "desktop capture",
+    "name": "Electron desktop capture",
     "version": "0.0.1",
     "main": "app.js"
 }
