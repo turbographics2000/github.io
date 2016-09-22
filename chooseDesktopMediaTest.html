@@ -8,7 +8,7 @@
         <video id="vid"></video>
         <script>
             chrome.runtime.sendMessage('godkfihnmdhpppnpibeiieemdcbhojaa','getStreamId', streamId => {
-                navigator.mediaDevices.getUserMeida({
+                navigator.mediaDevices.getUserMedia({
                     mandatory: {
                         chromeMediaSource: 'desktop', 
                         chromeMediaSourceId: streamId, 
