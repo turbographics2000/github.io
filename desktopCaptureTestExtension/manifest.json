@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+    "name": "chrometest",
+    "description": "chrometest",
+    "version": "1.0.3",
+    "background": {
+        "scripts": [ "bg.js" ]
+    },
+    "externally_connectable": {
+        "matches": [
+            "https://turbographics2000.github.io/*"
+        ]
+    },
+    "permissions": [
+        "desktopCapture"
+    ]
+}
