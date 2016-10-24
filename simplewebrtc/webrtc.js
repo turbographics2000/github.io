@@ -30,7 +30,7 @@ function start() {
           remoteView.srcObject = evt.streams[0];
     };
 
-    pc.onaddstrem = function(evt) {
+    pc.onaddstream = function(evt) {
         if(evt.stream) {
             remoteView.srcObject = evt.stream;
         }
