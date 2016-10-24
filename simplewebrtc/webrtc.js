@@ -21,6 +21,7 @@ function start() {
             signalingChannel.postMessage({ "desc": pc.localDescription });
         })
         .catch(logError);
+    };
 
     // once remote video track arrives, show it in the remote video element
     pc.ontrack = function (evt) {
