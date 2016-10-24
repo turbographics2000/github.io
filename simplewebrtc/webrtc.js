@@ -8,7 +8,7 @@ function start() {
 
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
-        signalingChannel.postMessage(JSON.stringify({ "candidate": evt.candidate }));
+        signalingChannel.postMessage({ candidate: evt.candidate });
     };
 
     // let the "negotiationneeded" event trigger offer generation
@@ -18,7 +18,7 @@ function start() {
         })
         .then(function () {
             // send the offer to the other peer
-            signalingChannel.postMessage({ "desc": pc.localDescription });
+            signalingChannel.postMessage({ desc: pc.localDescription });
         })
         .catch(logError);
     };
@@ -36,7 +36,7 @@ function start() {
     }
 
     // get a local stream, show it in a self-view and add it to be sent
-    navigator.mediaDevices.getUserMedia({ "audio": true, "video": true })
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
         .then(function (stream) {
             selfView.srcObject = stream;
             if(pc.addStream) {
@@ -65,7 +65,7 @@ signalingChannel.onmessage = function (evt) {
                 return pc.setLocalDescription(answer);
             })
             .then(function () {
-                signalingChannel.send({ "desc": pc.localDescription });
+                signalingChannel.send({ desc: pc.localDescription });
             })
             .catch(logError);
         } else if (desc.type == "answer") {
