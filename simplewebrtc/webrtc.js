@@ -21,7 +21,6 @@ function start() {
             signalingChannel.postMessage({ "desc": pc.localDescription });
         })
         .catch(logError);
-    };
 
     // once remote video track arrives, show it in the remote video element
     pc.ontrack = function (evt) {
@@ -74,7 +73,7 @@ signalingChannel.onmessage = function (evt) {
             log("Unsupported SDP type. Your code may differ here.");
         }
     } else
-        pc.addIceCandidate(new RTCIceCandidate(evt.data.candidate)).catch(logError);
+        pc.addIceCandidate(evt.data.candidate).catch(logError);
 };
 
 function logError(error) {
