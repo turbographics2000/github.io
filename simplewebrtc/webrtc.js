@@ -1,10 +1,11 @@
 var signalingChannel = new BroadcastChannel('webrtc-test');
 var configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 var pc;
+window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection; 
 
 // call start() to initiate
 function start() {
-    pc = new webkitRTCPeerConnection(configuration);
+    pc = new RTCPeerConnection(configuration);
 
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
