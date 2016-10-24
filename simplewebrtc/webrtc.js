@@ -8,7 +8,7 @@ function start() {
 
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
-        signalingChannel.postMessage({ candidate: evt.candidate });
+        signalingChannel.postMessage({ candidate: JSON.stringify(evt.candidate) });
     };
 
     // let the "negotiationneeded" event trigger offer generation
@@ -74,7 +74,7 @@ signalingChannel.onmessage = function (evt) {
             log("Unsupported SDP type. Your code may differ here.");
         }
     } else
-        pc.addIceCandidate(evt.data.candidate).catch(logError);
+        pc.addIceCandidate(JSON.parse(evt.data.candidate)).catch(logError);
 };
 
 function logError(error) {
