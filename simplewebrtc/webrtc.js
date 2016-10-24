@@ -65,7 +65,7 @@ signalingChannel.onmessage = function (evt) {
                 return pc.createAnswer();
             })
             .then(function (answer) {
-                return pc.setLocalDescription(answer);
+                return pc.setLocalDescription(new RTCSessionDescription(answer));
             })
             .then(function () {
                 signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
