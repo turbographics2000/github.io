@@ -61,7 +61,7 @@ signalingChannel.onmessage = function (evt) {
 
         // if we get an offer, we need to reply with an answer
         if (desc.type == "offer") {
-            pc.setRemoteDescription(desc).then(function () {
+            pc.setRemoteDescription(new RTCSessionDescription(desc)).then(function () {
                 return pc.createAnswer();
             })
             .then(function (answer) {
