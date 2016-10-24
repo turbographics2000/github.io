@@ -38,7 +38,7 @@ function start() {
     }
 
     // get a local stream, show it in a self-view and add it to be sent
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
         .then(function (stream) {
             selfView.srcObject = stream;
             if(pc.addStream) {
