@@ -10,7 +10,7 @@ function start() {
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
         if(evt.candidate) {
-            console.log('local candidate', message.candidate);
+            console.log('local candidate', evt.candidate);
             signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
         }
     };
