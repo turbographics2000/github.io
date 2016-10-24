@@ -74,7 +74,7 @@ signalingChannel.onmessage = function (evt) {
             log("Unsupported SDP type. Your code may differ here.");
         }
     } else
-        pc.addIceCandidate(JSON.parse(evt.data.candidate)).catch(logError);
+        pc.addIceCandidate(new RTCIceCandidate(JSON.parse(evt.data.candidate))).catch(logError);
 };
 
 function logError(error) {
