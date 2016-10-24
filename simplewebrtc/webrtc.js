@@ -9,14 +9,15 @@ function start() {
 
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
-        if(evt.candidate)
+        if(evt.candidate) {
+            console.log('local candidate', message.candidate);
             signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
+        }
     };
 
     // let the "negotiationneeded" event trigger offer generation
     pc.onnegotiationneeded = function () {
         pc.createOffer().then(function (offer) {
-            console.log('local candidate', message.candidate);
             return pc.setLocalDescription(offer);
         })
         .then(function () {
@@ -73,7 +74,6 @@ signalingChannel.onmessage = function (evt) {
             })
             .catch(logError);
         } else if (desc.type == "answer") {
-            console.log(desc);
             pc.setRemoteDescription(new RTCSessionDescription(desc)).catch(logError);
         } else {
             log("Unsupported SDP type. Your code may differ here.");
