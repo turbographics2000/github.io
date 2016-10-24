@@ -9,7 +9,7 @@ function start() {
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
         if(evt.candidate)
-            signalingChannel.postMessage({ candidate: JSON.stringify(evt.candidate) });
+            signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
     };
 
     // let the "negotiationneeded" event trigger offer generation
@@ -19,7 +19,7 @@ function start() {
         })
         .then(function () {
             // send the offer to the other peer
-            signalingChannel.postMessage({ desc: pc.localDescription });
+            signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
         })
         .catch(logError);
     };
@@ -54,8 +54,9 @@ signalingChannel.onmessage = function (evt) {
     if (!pc)
         start();
 
-    if (evt.data.desc) {
-        var desc = evt.data.desc;
+    var message = JSON.parse(evt.data);
+    if (message.desc) {
+        var desc = message.desc;
 
         // if we get an offer, we need to reply with an answer
         if (desc.type == "offer") {
@@ -66,7 +67,7 @@ signalingChannel.onmessage = function (evt) {
                 return pc.setLocalDescription(answer);
             })
             .then(function () {
-                signalingChannel.send({ desc: pc.localDescription });
+                signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
             })
             .catch(logError);
         } else if (desc.type == "answer") {
@@ -75,7 +76,7 @@ signalingChannel.onmessage = function (evt) {
             log("Unsupported SDP type. Your code may differ here.");
         }
     } else
-        pc.addIceCandidate(new RTCIceCandidate(JSON.parse(evt.data.candidate))).catch(logError);
+        pc.addIceCandidate(message.candidate).catch(logError);
 };
 
 function logError(error) {
