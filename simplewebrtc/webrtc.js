@@ -1,7 +1,7 @@
 var signalingChannel = new BroadcastChannel('webrtc-test');
 var configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 var pc;
-window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection; 
+window.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection; 
 
 // call start() to initiate
 function start() {
