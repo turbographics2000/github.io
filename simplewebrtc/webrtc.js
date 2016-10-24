@@ -16,6 +16,7 @@ function start() {
     // let the "negotiationneeded" event trigger offer generation
     pc.onnegotiationneeded = function () {
         pc.createOffer().then(function (offer) {
+            console.log('local candidate', message.candidate);
             return pc.setLocalDescription(offer);
         })
         .then(function () {
@@ -77,8 +78,10 @@ signalingChannel.onmessage = function (evt) {
         } else {
             log("Unsupported SDP type. Your code may differ here.");
         }
-    } else
+    } else {
+        console.log('remote candidate', message.candidate);
         pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(logError);
+    }
 };
 
 function logError(error) {
