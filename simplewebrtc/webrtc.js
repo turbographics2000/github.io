@@ -72,12 +72,12 @@ signalingChannel.onmessage = function (evt) {
             })
             .catch(logError);
         } else if (desc.type == "answer") {
-            pc.setRemoteDescription(desc).catch(logError);
+            pc.setRemoteDescription(new RTCSessionDescription(desc)).catch(logError);
         } else {
             log("Unsupported SDP type. Your code may differ here.");
         }
     } else
-        pc.addIceCandidate(message.candidate).catch(logError);
+        pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(logError);
 };
 
 function logError(error) {
