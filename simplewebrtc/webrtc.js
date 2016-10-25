@@ -115,11 +115,11 @@ function displayReport(report) {
     container.appendChild(h1);
     const tableRow = (tbody, cols, cellType) => {
         const tr = document.createElement('tr');
-        for(let col in cols) {
+        cols.forEach(col => {
             const td = document.createElement(cellType);
             td.textContent = col;
             tr.appendChild(td);
-        }
+        });
         tbody.appendChild(tr);
     }
     for(let typ in report) {
