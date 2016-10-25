@@ -1,0 +1,33 @@
+body{
+  background: white;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Hiragino Kaku Gothic ProN,"メイリオ",meiryo,sans-serif;
+}
+h1 {
+  border-bottom: 2px solid black;
+}
+h2 {
+  border-bottom: 1px solid #999;
+}
+h3 {
+    padding-top: 10px;
+    margin-bottom: 0.5em;
+}
+table {
+  color: #555;
+  border-collapse: collapse;
+}
+
+thead > tr {
+  border-bottom: 2px solid #999;
+}
+tr {
+  border-bottom: 1px solid #999;
+}
+
+th {
+  font-weight: 800;
+}
+
+th, td {
+  padding: 8px;
+}
