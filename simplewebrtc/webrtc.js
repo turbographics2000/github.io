@@ -5,7 +5,7 @@ let pc;
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection; 
 btnConnect.onclick = start;
 
-const appendVideo = (side, stream) => {
+function appendVideo(side, stream) {
     var video = document.createElement('div');
     video.id = side + stream.id;
     video.width = 320;
@@ -15,12 +15,12 @@ const appendVideo = (side, stream) => {
     video.play();
 };
 
-const removeVideo = (side, stream) => {
+function removeVideo(side, stream) {
     var video = window[side + stream.id];
     window[side + 'Streams'].removeChild(video);
 }
 
-const start = flg => {
+function start(flg) {
     pc = new RTCPeerConnection(configuration);
     pc.onicecandidate = evt => {
         signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
@@ -55,7 +55,7 @@ const start = flg => {
         .catch(logError);
 }
 
-signalingChannel.onmessage = evt => {
+signalingChannel.onmessage = function(evt) {
     let flg = false
     if (!pc) {
         flg = true;
@@ -89,11 +89,11 @@ signalingChannel.onmessage = evt => {
             .catch(logError);
 };
 
-const logError = error => {
+function logError(error) {
     console.log(error.name + ": " + error.message);
 };
 
-const chromeGetStats = _ => {
+function chromeGetStats() {
     pc.getStats(response => {
         let standardReport = {};
         response.result().forEach(reports => {
@@ -112,7 +112,7 @@ const chromeGetStats = _ => {
     });
 }
 
-const displayReport = report => {
+function displayReport(report) {
     const container = document.body;
     const h1 = document.createElement('h1');
     h1.textContent = '統計情報';
