@@ -8,6 +8,8 @@ h1 {
 h2 {
   padding-top: 10px;
   border-bottom: 1px solid #999;
+  padding-bottom: 2px;
+  margin-bottom: 0;
 }
 h3 {
     padding-top: 20px;
@@ -16,6 +18,7 @@ h3 {
 table {
   color: #555;
   border-collapse: collapse;
+  margin-top: 0.5em;
 }
 
 thead > tr {
