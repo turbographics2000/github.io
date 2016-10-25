@@ -6,7 +6,7 @@ window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConne
 btnConnect.onclick = start;
 
 function appendVideo(side, stream) {
-    var video = document.createElement('div');
+    var video = document.createElement('video');
     video.id = side + stream.id;
     video.width = 320;
     video.height = 240;
