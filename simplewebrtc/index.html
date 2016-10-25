@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
-        <title></title>
+        <title>getStats</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <button id="btnConnect">接続</button>
-        <video id="selfView0" autoplay></video>
-        <video id="selfView1" autoplay></video>
-        <video id="remoteView" autoplay></video>
+        <div id="selfStreams"></div>
+        <div id="remoteStreams"></div>
+        <div id="statsList"></div>
         <script src="webrtc.js"></script>
     </body>
 </html>
