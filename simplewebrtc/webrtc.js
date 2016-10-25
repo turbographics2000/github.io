@@ -57,11 +57,8 @@ function start(flg) {
 }
 
 signalingChannel.onmessage = function(evt) {
-    let flg = false
-    if (!pc) {
-        flg = true;
+    if (!pc) 
         start();
-    }
     let message = JSON.parse(evt.data);
     if (message.desc) {
         let desc = message.desc;
@@ -80,9 +77,7 @@ signalingChannel.onmessage = function(evt) {
         } else if (desc.type == "answer") {
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .catch(logError)
-                .then(_ => {
-                    if(flg) chromeGetStats();
-                });
+                .then(chromeGetStats);
         } else 
             console.log("Unsupported SDP type. Your code may differ here.");
     } else
