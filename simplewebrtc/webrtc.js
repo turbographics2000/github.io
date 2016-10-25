@@ -32,10 +32,10 @@ function start(flg) {
             .catch(logError);
     };
     pc.ontrack = evt => {
-        if(!window['remote_' + evt.streams[0]]) appendVideo('remote', evt.streams[0]);
+        if(!window['remote_' + evt.streams[0].id]) appendVideo('remote', evt.streams[0]);
     };
     pc.onaddstream = evt => {
-        appendVideo('remote', evt.streams[0]);
+        appendVideo('remote', evt.stream);
     }
     pc.onremovestream = evt => {
         removeVideo('remote', evt.stream);
