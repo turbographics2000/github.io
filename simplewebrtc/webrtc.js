@@ -127,7 +127,7 @@ function displayReport(report) {
     }
     for(let typ in report) {
         const h2 = document.createElement('h2');
-        h2.textContent = typ + ` タイプ (${Object.keys(report[typ]).length})`;
+        h2.textContent = typ + ` タイプ (cnt: ${Object.keys(report[typ]).length})`;
         container.appendChild(h2);
         for(let statsId in report[typ]) {
             //const h3 = document.createElement('h3');
