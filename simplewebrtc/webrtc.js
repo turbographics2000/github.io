@@ -120,8 +120,8 @@ function displayReport(report) {
         cols.forEach(col => {
             const td = document.createElement(cellType);
             td.textContent = col;
-            tr.appendChild(td);
             if(cellType === 'th') td.colspan = 2;
+            tr.appendChild(td);
         });
         tbody.appendChild(tr);
     }
