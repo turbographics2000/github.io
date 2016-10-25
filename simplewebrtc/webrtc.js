@@ -23,7 +23,8 @@ function removeVideo(side, stream) {
 function start(flg) {
     pc = new RTCPeerConnection(configuration);
     pc.onicecandidate = evt => {
-        signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
+        if(evt.candidate)
+            signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
     }
     pc.onnegotiationneeded = _ => {
         pc.createOffer()
