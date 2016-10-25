@@ -121,6 +121,7 @@ function displayReport(report) {
             const td = document.createElement(cellType);
             td.textContent = col;
             tr.appendChild(td);
+            if(cellType === 'th') td.colspan = 2;
         });
         tbody.appendChild(tr);
     }
@@ -129,15 +130,15 @@ function displayReport(report) {
         h2.textContent = typ + ` タイプ (${Object.keys(report[typ]).length})`;
         container.appendChild(h2);
         for(let statsId in report[typ]) {
-            const h3 = document.createElement('h3');
-            h3.textContent = statsId;
-            container.appendChild(h3);
+            //const h3 = document.createElement('h3');
+            //h3.textContent = statsId;
+            //container.appendChild(h3);
             const table = document.createElement('table');
             const tHead = document.createElement('thead');
             const tBody = document.createElement('tbody');
             table.appendChild(tHead);
             table.appendChild(tBody);
-            tableRow(tHead, ['name', 'value'], 'th');
+            tableRow(tHead, [statsId], 'th');
             for(let name in report[typ][statsId]) {
                 tableRow(tBody, [name, report[typ][statsId][name]], 'td');
             }
