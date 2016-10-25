@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"></head>
+        <title>Chrome capture test</title>
+    </head>
+    <body>
+        <video id="vid"></video>
+        <script>
+            chrome.runtime.sendMessage('pladmbfiglhalbmicbbngejhikhikipe','getStreamId', streamId => {
+                navigator.mediaDevices.getUserMedia({
+                    audio: false, 
+                    video: {
+                        mandatory: {
+                            chromeMediaSource: 'desktop',
+                            chromeMediaSourceId: sourceId,
+                            maxWidth: 1920,
+                            maxHeight: 1080,
+                        }
+                    }
+                }).then(stream => {
+                    vid.srcObject = stream;
+                });
+            });
+        </script>
+    </body>
+</html>

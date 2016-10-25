@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NW.js capture test</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <script>
+        chrome.desktopCapture.chooseDesktopMedia(["window","screen"],
+        function(streamId) {
+            var vid_constraint = {
+                mandatory: {
+                    chromeMediaSource: 'desktop', 
+                    chromeMediaSourceId: streamId, 
+                    maxWidth: 1920, 
+                    maxHeight: 1080
+                }, 
+                optional: []
+                };
+                navigator.webkitGetUserMedia({audio: false, video: vid_constraint}, success_func, fallback_func);
+            }
+        );
+    </script>
+  </body>
+</html>

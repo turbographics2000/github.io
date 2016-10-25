@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"></head>
+        <title>electron chooseDesktopMediaTest</title>
+        <style>
+            #sourceList {
+                list-style-type: none;
+                border: 1px solid #d9d9d9;
+                padding: 0;
+                width: calc(180px * 3 + 18px);
+                min-height: 160px;
+                height: 320px;
+                margin: 0;
+                overflow-y: scroll;
+            }
+
+            .sourceItem {
+                float: left;
+                width: 160px;
+                height: 140px;
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .sourceItem img {
+                /*width: 160px;*/
+                height: auto;
+                max-height: 100px;
+            }
+
+            .sourceItem.select {
+                background-color: rgb(66, 129, 244);
+            }
+
+            #buttonContainer {
+                position: absolute;
+                bottom: 10px;
+                width: calc(100vw - 20px);
+            }
+
+            .dialog-button {
+                width: 100px;
+                height: 30px;
+                border: 1px solid #aaa;
+                border-radius: 2px;
+                box-sizing: border-box;
+                margin: 10px 0 10px 20px;
+                font-size: 14px;
+                background: white;
+                float: right;
+                cursor: pointer;
+            }
+
+        </style>
+    </head>
+    <body>
+        <span id="dialogTitle">共有する画面を選択してください</span>
+        <ul id="sourceList"></ul>
+        <div id="buttonContainer">
+            <button id="btnCancel" class="dialog-button">キャンセル</button>
+            <button id="btnOK" class="dialog-button" disabled>共有</button>
+        </div>
+        <script>
+            const {desktopCapturer} = require('electron');
+            desktopCapturer.getSources({types: ['window', 'screen']}, (error, sources) => {
+                console.log(sources);
+                if (error) throw error;
+                sourceList.innerHTML = '';
+                sources.forEach(source => {
+                    let name = source.name;
+                    let thumb = source.thumbnail.toDataURL();
+                    if (!thumb) return;
+                    let item = document.createElement('li');
+                    item.dataset.id = source.id;
+                    item.classList.add('sourceItem');
+                    let img = new Image();
+                    img.src = thumb;
+                    let itemName = document.createElement('div');
+                    itemName.textContent = name.slice(0, 20);
+                    item.appendChild(img);
+                    item.appendChild(itemName);
+                    sourceList.appendChild(item);
+                });
+            });
+        </script>
+    </body>
+</html>

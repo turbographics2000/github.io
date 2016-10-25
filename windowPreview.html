@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>画面共有App画面</title>
+        <link rel="stylesheet" href="css/app.css">
+        <script src="js/xhr.js"></script>
+        <script src="js/adapter.js"></script>
+        <script src="https://skyway.io/dist/0.3/peer.js"></script>
+        <script src="https://enkarz.me:3002/socket.io/socket.io.js"></script>
+    </head>
+    <body id="selectCaptureWindowDialogBody">
+        <div id="container" stype="display: none">
+            <div id="shareType"></div>
+            <video id="ssVideo" autoplay class="ssPreview"></video>
+            <div id="ssChangeTarget">
+                <img src="img/window-change-icon.png">
+                <span>共有するウィンドウを変更</span>
+            </div>
+        </div>
+        <div id="selectCaptureWindowDialog">
+        </div>
+        <script src="js/windowPreview.js"></script>
+    </body>
+</html>
+
