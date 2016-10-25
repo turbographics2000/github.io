@@ -1,93 +1,147 @@
-var signalingChannel = new BroadcastChannel('webrtc-test');
-var configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
-var pc;
+const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
+const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
+let pc;
+
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection; 
+btnConnect.onclick = start;
 
-// call start() to initiate
-function start() {
+const appendVideo = (side, stream) => {
+    var video = document.createElement('div');
+    video.id = side + stream.id;
+    remoteStreams.appendChild(video);
+    video.srcObject = stream;
+    video.play();
+};
+
+const removeVideo = (side, stream) => {
+    var video = window[side + stream.id];
+    window[side + 'Streams'].removeChild(video);
+}
+
+const start = flg => {
     pc = new RTCPeerConnection(configuration);
-
-    // send any ice candidates to the other peer
-    pc.onicecandidate = function (evt) {
-        if(evt.candidate) {
-            console.log('local candidate', evt.candidate);
-            signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
-        }
-    };
-
-    // let the "negotiationneeded" event trigger offer generation
-    pc.onnegotiationneeded = function () {
-        pc.createOffer().then(function (offer) {
-            return pc.setLocalDescription(offer);
-        })
-        .then(function () {
-            // send the offer to the other peer
-            signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
-        })
-        .catch(logError);
-    };
-
-    // once remote video track arrives, show it in the remote video element
-    pc.ontrack = function (evt) {
-        if (evt.track.kind === "video")
-          remoteView.srcObject = evt.streams[0];
-    };
-
-    pc.onaddstream = function(evt) {
-        if(evt.stream) {
-            remoteView.srcObject = evt.stream;
-        }
+    pc.onicecandidate = evt => {
+        signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
     }
-
-    // get a local stream, show it in a self-view and add it to be sent
+    pc.onnegotiationneeded = _ => {
+        pc.createOffer()
+            .then(offer => pc.setLocalDescription(offer))
+            .then(_ => signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription })))
+            .catch(logError);
+    };
+    pc.ontrack = evt => {
+        if(!window['remote_' + evt.streams[0]]) appendVideo('remote', evt.streams[0]);
+    };
+    pc.onaddstream = evt => {
+        appendVideo('remote', evt.streams[0]);
+    }
+    pc.onremovestream = evt => {
+        removeVideo('remote', evt.stream);
+    }
     navigator.mediaDevices.getUserMedia({ audio: false, video: true })
-        .then(function (stream) {
-            selfView.srcObject = stream;
+        .then(stream => {
+            appendVideo('self', stream);
             if(pc.addStream) {
                 pc.addStream(stream);
             } else {
-                pc.addTrack(stream.getAudioTracks()[0], stream);
-                pc.addTrack(stream.getVideoTracks()[0], stream);
+                if(stream.getAudioTracks().length)
+                    pc.addTrack(stream.getAudioTracks()[0], stream);
+                if(stream.getVideoTracks().length)
+                    pc.addTrack(stream.getVideoTracks()[0], stream);
             }
         })
         .catch(logError);
 }
 
-signalingChannel.onmessage = function (evt) {
-    if (!pc)
+signalingChannel.onmessage = evt => {
+    let flg = false
+    if (!pc) {
+        flg = true;
         start();
-
-    var message = JSON.parse(evt.data);
-    if (message.desc) {
-        var desc = message.desc;
-
-        // if we get an offer, we need to reply with an answer
-        if (desc.type == "offer") {
-            pc.setRemoteDescription(new RTCSessionDescription(desc)).then(function () {
-                return pc.createAnswer();
-            })
-            .then(function (answer) {
-                return pc.setLocalDescription(new RTCSessionDescription(answer));
-            })
-            .then(function () {
-                signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
-            })
-            .catch(logError);
-        } else if (desc.type == "answer") {
-            pc.setRemoteDescription(new RTCSessionDescription(desc)).catch(logError);
-        } else {
-            log("Unsupported SDP type. Your code may differ here.");
-        }
-    } else {
-        console.log('remote candidate', message.candidate);
-        pc.addIceCandidate(new RTCIceCandidate(message.candidate)).catch(logError);
     }
+    let message = JSON.parse(evt.data);
+    if (message.desc) {
+        let desc = message.desc;
+        if (desc.type == "offer") {
+            pc.setRemoteDescription(new RTCSessionDescription(desc))
+                .then(_ =>{
+                    pc.createAnswer();
+                })
+                .then(answer => {
+                    pc.setLocalDescription(new RTCSessionDescription(answer));
+                })
+                .then(_ => {
+                    signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }))
+                })
+                .catch(logError);
+        } else if (desc.type == "answer") {
+            pc.setRemoteDescription(new RTCSessionDescription(desc))
+                .catch(logError)
+                .then(_ => {
+                    if(flg) chromeGetStats();
+                });
+        } else 
+            console.log("Unsupported SDP type. Your code may differ here.");
+    } else
+        pc.addIceCandidate(new RTCIceCandidate(message.candidate))
+            .catch(logError);
 };
 
-function logError(error) {
+const logError = error => {
     console.log(error.name + ": " + error.message);
+};
+
+const chromeGetStats = _ => {
+    pc.getStats(response => {
+        let standardReport = {};
+        response.result().forEach(reports => {
+            const standardStats = {
+                id: reports.id,
+                timestamp: reports.timestamp,
+                type: reports.type
+            };
+            reports.names().forEach(name => {
+                standardStats[name] = reports.stat(name);
+            });
+            standardReport[reports.type] = standardReport[reports.type] || {};
+            standardReport[reports.type][standardStats.id] = standardStats;
+        });
+        displayReport(standardReport);
+    });
 }
 
-btnConnect.onclick = function() {
-    start();
+const displayReport = report => {
+    const container = document.body;
+    const h1 = document.createElement('h1');
+    h1.textContent = '統計情報';
+    container.appendChild(h1);
+    const tableRow = (tbody, cols, cellType) => {
+        const tr = document.createElement('tr');
+        for(let col in cols) {
+            const td = document.createElement(cellType);
+            td.textContent = col;
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    }
+    for(let typ in report) {
+        const h2 = document.createElement('h2');
+        h2.textContent = type + ' タイプ';
+        container.appendChild(h2);
+        for(let statsId in report[typ]) {
+            const h3 = document.createElement('h3');
+            h3.textContent = statsId;
+            container.appendChild(h3);
+            const table = document.createElement('table');
+            const tHead = document.createElement('thead');
+            const tBody = document.createElement('tbody');
+            table.appendChild(tHead);
+            table.appendChild(tBody);
+            tableRow(tHead, ['name', 'value'], 'th');
+            for(let name in report[typ][statsId]) {
+                tableRow(tBody, [name, report[typ][statsId][name]], 'td');
+            }
+            container.appendChild(table);
+        }
+    }
 }
