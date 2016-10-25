@@ -140,7 +140,8 @@ function displayReport(report) {
             table.appendChild(tBody);
             tableRow(tHead, [statsId], 'th');
             for(let name in report[typ][statsId]) {
-                tableRow(tBody, [name, report[typ][statsId][name]], 'td');
+                if(name !== 'id')
+                    tableRow(tBody, [name, report[typ][statsId][name]], 'td');
             }
             container.appendChild(table);
         }
