@@ -67,7 +67,7 @@ signalingChannel.onmessage = function(evt) {
         if (desc.type == "offer") {
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .then(_ =>{
-                    pc.createAnswer();
+                    return pc.createAnswer();
                 })
                 .then(answer => {
                     pc.setLocalDescription(new RTCSessionDescription(answer));
