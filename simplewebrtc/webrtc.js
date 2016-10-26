@@ -115,10 +115,16 @@ function logError(error) {
 
 const standardReport = {};
 function chromeGetStats() {
+    const container = document.body;
     pc.getStats(response => {
         response.result().forEach(stats => {
             const typeId = 'webrtc_statstype' + stats.type;
             let statsTypeContainer = window[typeId];
+            if(!statsTypeContainer) {
+                statsTypeContainer = document.createElement('div');
+                container.appendChild(statsTypeContainer);
+            }
+
             let reportStatsType = standardReport[typeId];
             if(!reportStatsType) {
                 statsTypeContainer = document.createElement('div');
@@ -156,6 +162,7 @@ function chromeGetStats() {
                     timestamp: stats.timestamp,
                     type: stats.type
                 };
+                reportStatsType[stats.id] = reportStats;
             }
             
             stats.names().forEach(name => {
@@ -175,6 +182,7 @@ function chromeGetStats() {
                 } else if(oldValue !== value) {
                     window[statId].textContent = value;
                 }
+                
                 reportStats[name] = value;
             });
         });
