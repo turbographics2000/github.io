@@ -124,7 +124,7 @@ function chromeGetStats() {
                 statsTypeContainer = document.createElement('div');
                 statsTypeContainer.id = typeId;
                 const h2 = document.createElement('h2');
-                h2.textContent = typ + ` タイプ (cnt: ${Object.keys(report[typ]).length})`;
+                h2.textContent = `${stats.type}タイプ (cnt: ${Object.keys(report[typ]).length})`;
                 statsTypeContainer.appendChild(h2);
 
                 reportStatsType = {};
