@@ -8,8 +8,6 @@ btnConnect.onclick = start;
 function appendVideo(side, stream) {
     var video = document.createElement('video');
     video.id = side + stream.id;
-    video.width = 160;
-    video.height = 120;
     window[side + 'Streams'].appendChild(video);
     video.srcObject = stream;
     video.play();
@@ -18,6 +16,23 @@ function appendVideo(side, stream) {
 function removeVideo(side, stream) {
     var video = window[side + stream.id];
     window[side + 'Streams'].removeChild(video);
+}
+
+function addStream() {
+    if(selfStreams.children.length >= 3) return;
+    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+        .then(stream => {
+            appendVideo('self', stream);
+            if(pc.addStream) {
+                pc.addStream(stream);
+            } else {
+                if(stream.getAudioTracks().length)
+                    pc.addTrack(stream.getAudioTracks()[0], stream);
+                if(stream.getVideoTracks().length)
+                    pc.addTrack(stream.getVideoTracks()[0], stream);
+            }
+        })
+        .catch(logError);
 }
 
 function start(flg) {
@@ -41,19 +56,7 @@ function start(flg) {
     pc.onremovestream = evt => {
         removeVideo('remote', evt.stream);
     }
-    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
-        .then(stream => {
-            appendVideo('self', stream);
-            if(pc.addStream) {
-                pc.addStream(stream);
-            } else {
-                if(stream.getAudioTracks().length)
-                    pc.addTrack(stream.getAudioTracks()[0], stream);
-                if(stream.getVideoTracks().length)
-                    pc.addTrack(stream.getVideoTracks()[0], stream);
-            }
-        })
-        .catch(logError);
+    addStream();
 }
 
 signalingChannel.onmessage = function(evt) {

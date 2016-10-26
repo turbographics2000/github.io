@@ -43,3 +43,8 @@ th {
 th, td {
   padding: 2px;
 }
+
+video {
+  width: 160;
+  height: 120;
+}
