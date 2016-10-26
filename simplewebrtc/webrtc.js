@@ -8,9 +8,9 @@ btnConnect.onclick = start;
 function appendVideo(side, stream) {
     var video = document.createElement('video');
     video.id = side + stream.id;
-    video.width = 320;
-    video.height = 240;
-    remoteStreams.appendChild(video);
+    video.width = 160;
+    video.height = 120;
+    window[side + 'Streams'].appendChild(video);
     video.srcObject = stream;
     video.play();
 };
