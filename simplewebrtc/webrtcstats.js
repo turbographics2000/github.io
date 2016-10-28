@@ -18,6 +18,7 @@ function WebRTCStats(peerConnections, options) {
     if(isNan(this.options.interval)){
         options.interval = 1000;
     }
+
     displayReport(chromeGetStats());
 }
 
