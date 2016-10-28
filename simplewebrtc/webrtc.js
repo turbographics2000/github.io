@@ -8,7 +8,7 @@ btnConnect.onclick = start;
 function appendVideo(side, stream) {
     var video = document.createElement('video');
     video.id = side + stream.id;
-    window[side + 'Streams'].appendChild(video);
+    window[side + 's'].appendChild(video);
     video.srcObject = stream;
     video.play();
 };
