@@ -84,6 +84,7 @@ function start(flg) {
 signalingChannel.onmessage = function(evt) {
     if (!pc)
         start();
+    console.log(evt.data);
     let message = JSON.parse(evt.data);
     if (message.desc) {
         let desc = message.desc;
