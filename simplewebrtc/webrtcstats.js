@@ -24,20 +24,22 @@ function WebRTCStats(peerConnections, options) {
 
 function chromeGetStats() {
     pc.getStats(response => {
-        var report = {};
-        response.result().forEach(stats => {
-            var reportStats = {
-                id: stats.id,
-                timestamp: stats.timestamp,
-                type: stats.type
-            };
-            stats.names().forEach(name => {
-                reportStats[name] = stats.stat(name);
+        return new Promise(function(resolve, reject) {
+            var report = {};
+            response.result().forEach(stats => {
+                var reportStats = {
+                    id: stats.id,
+                    timestamp: stats.timestamp,
+                    type: stats.type
+                };
+                stats.names().forEach(name => {
+                    reportStats[name] = stats.stat(name);
+                });
+                report[stats.type] = report[stats.type] || {};
+                report[stats.type][reportStats.id] = reportStats;
             });
-            report[stats.type] = report[stats.type] || {};
-            report[stats.type][reportStats.id] = reportStats;
+            resolve(report);
         });
-        return report;
     });
     console.log('hoge');
 }
