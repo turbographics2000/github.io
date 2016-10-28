@@ -2,7 +2,7 @@ const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
 
-window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection; 
+window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
 
 function appendVideo(side, stream) {
@@ -20,7 +20,23 @@ function removeVideo(side, stream) {
 
 function addStream() {
     if(selfStreams.children.length >= 3) return;
-    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+    navigator.mediaDevices.getUserMedia({
+            audio: false,
+            // audio: {
+            //     googEchoCancellation: true,
+            //     googAutoGainControl: true,
+            //     googNoizeSuppression: true,
+            //     googHighpassFilter: true,
+            //     googNoizeSuppression2: true,
+            //     googEchoCancellation2: true,
+            //     googAutoGainControl2: true
+            // },
+            video: {
+                width: { ideal: 320},
+                height: { ideal: 240 },
+                frameRate: {min: 1, max: 15}
+            }
+        })
         .then(stream => {
             appendVideo('self', stream);
             if(pc.addStream) {
@@ -60,7 +76,7 @@ function start(flg) {
 }
 
 signalingChannel.onmessage = function(evt) {
-    if (!pc) 
+    if (!pc)
         start();
     let message = JSON.parse(evt.data);
     if (message.desc) {
@@ -83,7 +99,7 @@ signalingChannel.onmessage = function(evt) {
                 .then(_ => {
                     setTimeout(chromeGetStats, 2000);
                 });
-        } else 
+        } else
             console.log("Unsupported SDP type. Your code may differ here.");
     } else
         pc.addIceCandidate(new RTCIceCandidate(message.candidate))
@@ -114,32 +130,56 @@ function logError(error) {
 // }
 
 const standardReport = {};
+const eventHandlers = {}
+function on(eventName, func) {
+    if(typeof eventName !== 'string') throw 'argument 1 expect string'
+    if(typeof func !== 'function') throw 'not function';
+    eventHandlers[eventName] = eventHandlers[eventName] || [];
+}
+function off(eventName, func) {
+    if(!func) throw 'require argument 2 function type';
+    if(func) throw 'argument 2 not function';
+    eventHandlers.splice(eventHandlers.indexOf(func), 1);
+}
+function offAll(eventName) {
+    delete eventHandlers[eventName];
+}
+function eventEmmit(eventName) {
+    let handlers = eventHandlers[eventName];
+    for(let i = 0, l = handlers.length; i < l; i++) {
+        handlers[i]();
+    }
+}
 function chromeGetStats() {
-    const container = document.body;
+    const container = document.createDocumentFragment();
     pc.getStats(response => {
         response.result().forEach(stats => {
-            const typeId = 'webrtc_statstype' + stats.type;
+            const typeId = `webrtcstats_${stats.type}`;
             let statsTypeContainer = window[typeId];
             if(!statsTypeContainer) {
-                statsTypeContainer = document.createElement('div');
+                const statsTypeContainer = document.createElement('div');
+                statsTypeContainer.id = typeId;
                 container.appendChild(statsTypeContainer);
             }
 
             let reportStatsType = standardReport[typeId];
+            let sameTypeStatsCntId = `webrtcstats_${stats.type}_count`;
+            let newStatsType;
             if(!reportStatsType) {
-                statsTypeContainer = document.createElement('div');
-                statsTypeContainer.id = typeId;
                 const h2 = document.createElement('h2');
-                h2.textContent = `${stats.type}タイプ (cnt: ${Object.keys(report[stats.type]).length})`;
+                h2.id = sameTypeStatsCntId;
                 statsTypeContainer.appendChild(h2);
-
                 reportStatsType = {};
                 standardReport[statsTypeId] = reportStatsType;
-            } 
+                h2.textContent = `${stats.type}タイプ (cnt: ${Object.keys(standardReport[stats.type]).length})`;
+                newStatsType = newStatsType || {};
+                newStatsType[stats] = reportStatsType;
+            }
 
-            const statsId = 'webrtc_stats' + sstats.Id;
-            let statsTable = window[statsId];
+            const statsId = `webrtcstats_${stats.type}_${sstats.Id}`;
+            let statsTbody = window[statsId];
             let reportStats = reportStatsType[statsId];
+            let newStats = null;
             const statsTableId = 'stats' + stats.id;
             if(!reportStats) {
                 const table = document.createElement('table');
@@ -149,26 +189,27 @@ function chromeGetStats() {
                 const tBody = document.createElement('tbody');
                 th.colSpan = 2;
                 th.textContent = stats.id;
+                th.id = statsId;
                 thtr.appendChild(th);
                 thead.appendChild(thtr);
                 table.appendChild(thead);
-                tBody.id = statsId;
+                tBody.id = `${statsId}_table`;
                 table.appendChild(tbody);
-                statsTable = tBody;
+                statsTbody = tBody;
                 statsTypeContainer.appendChild(table);
-
                 reportStats = {
                     id: stats.id,
                     timestamp: stats.timestamp,
                     type: stats.type
                 };
                 reportStatsType[stats.id] = reportStats;
+                newStats = reportStats;
             }
-            
+
             stats.names().forEach(name => {
-                const statId = 'webrtc_stat' + name;
+                const statId = `webrtcstats_${stats.type}_${stats.Id}_${name}`;
                 const value = stats.stat(name);
-                let oldValue = reportStats[name];
+                const oldValue = reportStats[name];
                 if(!oldValue) {
                     const tr = document.createElement('tr');
                     const tdName = document.createElement('td');
@@ -178,11 +219,12 @@ function chromeGetStats() {
                     tdValue.textContent = stats.stat(name);
                     tr.appendChild(tdName);
                     tr.appendChild(tdValue);
-                    statsTable.appendChild(tr);
+                    statsTbody.appendChild(tr);
+                    eventEmmit('newStat', stats.type, stats.id, name, value);
                 } else if(oldValue !== value) {
                     window[statId].textContent = value;
+                    eventEmmit('statsValueChanged', stats.type, stats.id, name, value);
                 }
-                
                 reportStats[name] = value;
             });
         });
