@@ -117,11 +117,13 @@ signalingChannel.onmessage = function(evt) {
                 });
         } else
             console.log("Unsupported SDP type. Your code may differ here.");
-    } else
+    } else {
+        console.log(message.candidate);
         pc.addIceCandidate(new RTCIceCandidate(message.candidate))
             .catch(error => {
                 console.log(error.name + ": " + error.message);
             });
+    }
 };
 
 function logError(error) {
