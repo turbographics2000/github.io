@@ -41,7 +41,6 @@ function chromeGetStats() {
             resolve(report);
         });
     });
-    console.log('hoge');
 }
 
 function displayReport(report) {

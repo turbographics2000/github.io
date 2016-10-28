@@ -99,7 +99,7 @@ signalingChannel.onmessage = function(evt) {
                 .then(_ => {
                     if(window.chrome) {
                         setTimeout(function() {
-                            chromeGetStats();
+                            chromeGetStats().then(displayReport);
                         }, 1000);
                     } else {
                         firefoxGetStats();
