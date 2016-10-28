@@ -48,7 +48,9 @@ function addStream() {
                     pc.addTrack(stream.getVideoTracks()[0], stream);
             }
         })
-        .catch(logError);
+        .catch(error => {
+            console.log(error.name + ": " + error.message);
+        });
 }
 
 function start(flg) {
@@ -61,10 +63,14 @@ function start(flg) {
         pc.createOffer()
             .then(offer => pc.setLocalDescription(offer))
             .then(_ => signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription })))
-            .catch(logError);
+            .catch(error => {
+                console.log(error.name + ": " + error.message);
+            });
     };
     pc.ontrack = evt => {
-        if(!window['remote_' + evt.streams[0].id]) appendVideo('remote', evt.streams[0]);
+        if(!window['remote_' + evt.streams[0].id]) {
+            appendVideo('remote', evt.streams[0]);
+        }
     };
     pc.onaddstream = evt => {
         appendVideo('remote', evt.stream);
@@ -92,10 +98,14 @@ signalingChannel.onmessage = function(evt) {
                 .then(_ => {
                     signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }))
                 })
-                .catch(logError);
+                .catch(error => {
+                    console.log(error.name + ": " + error.message);
+                });
         } else if (desc.type == "answer") {
             pc.setRemoteDescription(new RTCSessionDescription(desc))
-                .catch(logError)
+                .catch(error => {
+                    console.log(error.name + ": " + error.message);
+                })
                 .then(_ => {
                     if(window.chrome) {
                         setTimeout(function() {
@@ -109,7 +119,9 @@ signalingChannel.onmessage = function(evt) {
             console.log("Unsupported SDP type. Your code may differ here.");
     } else
         pc.addIceCandidate(new RTCIceCandidate(message.candidate))
-            .catch(logError);
+            .catch(error => {
+                console.log(error.name + ": " + error.message);
+            });
 };
 
 function logError(error) {
