@@ -88,6 +88,7 @@ signalingChannel.onmessage = function(evt) {
     if (message.desc) {
         let desc = message.desc;
         if (desc.type == "offer") {
+            console.log('setRemoteDescription offer');
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .then(_ =>{
                     return pc.createAnswer();
@@ -102,12 +103,12 @@ signalingChannel.onmessage = function(evt) {
                     console.log(error.name + ": " + error.message);
                 });
         } else if (desc.type == "answer") {
+            console.log('setRemoteDescription answer');
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .catch(error => {
                     console.log(error.name + ": " + error.message);
                 })
                 .then(_ => {
-                    console.log('setRemoteDescription answer');
                     if(window.chrome) {
                         setTimeout(function() {
                             chromeGetStats().then(displayReport);
