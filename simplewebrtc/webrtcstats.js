@@ -43,6 +43,16 @@ function chromeGetStats() {
     });
 }
 
+function firefoxGetStats() {
+    return pc.getStats().then(response => {
+        const report = {};
+        for(stats of response) {
+            report[stats.type] = stats;
+        }
+        return report;
+    })
+}
+
 function displayReport(report) {
     const container = document.body;
     const h1 = document.createElement('h1');
