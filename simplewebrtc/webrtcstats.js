@@ -68,12 +68,13 @@ function displayReport(report) {
             //h3.textContent = statsId;
             //container.appendChild(h3);
             const tableId = 'table' + statsId;
-            let table = window[tableId];
+            let tBody = window[tableId];
             if(!table) {
                 table = document.createElement('table');
                 table.id = tableId;
                 const tHead = document.createElement('thead');
-                const tBody = document.createElement('tbody');
+                tBody = document.createElement('tbody');
+                tBody.id = tableId;
                 table.appendChild(tHead);
                 table.appendChild(tBody);
                 tableRow(tHead, 'th', statsId, [statsId]);
