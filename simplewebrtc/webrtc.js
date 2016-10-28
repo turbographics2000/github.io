@@ -97,6 +97,9 @@ signalingChannel.onmessage = function(evt) {
                     pc.setLocalDescription(new RTCSessionDescription(answer));
                 })
                 .then(_ => {
+                    if(!pc.localDescription) {
+                        debugger;
+                    }
                     setTimeout(signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription })), 1000);
                 })
                 .catch(error => {
