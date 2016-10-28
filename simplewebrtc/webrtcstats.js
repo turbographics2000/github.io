@@ -69,7 +69,7 @@ function displayReport(report) {
             //container.appendChild(h3);
             const tableId = 'table' + statsId;
             let tBody = window[tableId];
-            if(!table) {
+            if(!tBody) {
                 table = document.createElement('table');
                 table.id = tableId;
                 const tHead = document.createElement('thead');
