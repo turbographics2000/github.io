@@ -68,7 +68,7 @@ function start(flg) {
             });
     };
     pc.ontrack = evt => {
-        if(!window['remote_' + evt.streams[0].id]) {
+        if(!window['remote' + evt.streams[0].id]) {
             appendVideo('remote', evt.streams[0]);
         }
     };
@@ -86,9 +86,7 @@ signalingChannel.onmessage = function(evt) {
         start();
     let message = JSON.parse(evt.data);
     if ('desc' in message) {
-        let desc = message.desc;
         if (desc.type == "offer") {
-            console.log('setRemoteDescription offer');
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .then(_ =>{
                     return pc.createAnswer();
@@ -97,17 +95,12 @@ signalingChannel.onmessage = function(evt) {
                     return pc.setLocalDescription(new RTCSessionDescription(answer));
                 })
                 .then(_ => {
-                    var d = pc.localDescription;
-                    if(!pc.localDescription) {
-                        debugger;
-                    }
-                    setTimeout(signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription })), 1000);
+                    signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription }));
                 })
                 .catch(error => {
                     console.log(error.name + ": " + error.message);
                 });
         } else if (desc.type == "answer") {
-            console.log('setRemoteDescription answer');
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .catch(error => {
                     console.log(error.name + ": " + error.message);
