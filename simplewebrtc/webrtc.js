@@ -84,7 +84,6 @@ function start(flg) {
 signalingChannel.onmessage = function(evt) {
     if (!pc)
         start();
-    console.log(evt.data);
     let message = JSON.parse(evt.data);
     if (message.desc) {
         let desc = message.desc;
@@ -119,7 +118,6 @@ signalingChannel.onmessage = function(evt) {
         } else
             console.log("Unsupported SDP type. Your code may differ here.");
     } else {
-        console.log(message.candidate);
         pc.addIceCandidate(new RTCIceCandidate(message.candidate))
             .catch(error => {
                 console.log(error.name + ": " + error.message);
