@@ -68,6 +68,7 @@ function start(flg) {
             });
     };
     pc.ontrack = evt => {
+        console.log(evt.streams);
         if(!window['remote' + evt.streams[0].id]) {
             appendVideo('remote', evt.streams[0]);
         }
