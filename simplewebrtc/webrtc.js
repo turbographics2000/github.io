@@ -85,7 +85,7 @@ signalingChannel.onmessage = function(evt) {
     if (!pc)
         start();
     let message = JSON.parse(evt.data);
-    if (message.desc) {
+    if ('desc' in message) {
         let desc = message.desc;
         if (desc.type == "offer") {
             console.log('setRemoteDescription offer');
