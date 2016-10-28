@@ -94,7 +94,7 @@ signalingChannel.onmessage = function(evt) {
                     return pc.createAnswer();
                 })
                 .then(answer => {
-                    pc.setLocalDescription(new RTCSessionDescription(answer));
+                    return pc.setLocalDescription(new RTCSessionDescription(answer));
                 })
                 .then(_ => {
                     var d = pc.localDescription;
