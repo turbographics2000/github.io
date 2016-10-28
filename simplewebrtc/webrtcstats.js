@@ -68,7 +68,7 @@ function displayReport(report) {
             //h3.textContent = statsId;
             //container.appendChild(h3);
             const tableId = 'table' + statsId;
-            let table = winodw[tableId];
+            let table = window[tableId];
             if(!table) {
                 table = document.createElement('table');
                 table.id = tableId;
