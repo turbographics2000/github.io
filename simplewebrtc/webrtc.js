@@ -31,11 +31,11 @@ function addStream() {
             //     googEchoCancellation2: true,
             //     googAutoGainControl2: true
             // },
-            video: {
+            video: true/*{
                 width: {ideal: 320},
                 height: {ideal: 240},
                 frameRate: {min: 1, max: 15}
-            }
+            }*/
         })
         .then(stream => {
             appendVideo('selfStream', stream);
