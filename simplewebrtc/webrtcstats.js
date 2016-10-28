@@ -23,8 +23,8 @@ function WebRTCStats(peerConnections, options) {
 }
 
 function chromeGetStats() {
-    pc.getStats(response => {
-        return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve, reject) {
+        pc.getStats(response => {
             var report = {};
             response.result().forEach(stats => {
                 var reportStats = {
