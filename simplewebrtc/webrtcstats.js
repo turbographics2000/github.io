@@ -47,7 +47,8 @@ function firefoxGetStats() {
     return pc.getStats().then(response => {
         const report = {};
         for(stats of response) {
-            report[stats.type] = stats;
+            report[stats.type] = report[stats.type] || {};
+            report[stats.type][stats.id] = stats;
         }
         return report;
     })
