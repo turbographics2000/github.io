@@ -107,6 +107,7 @@ signalingChannel.onmessage = function(evt) {
                     console.log(error.name + ": " + error.message);
                 })
                 .then(_ => {
+                    console.log('setRemoteDescription answer');
                     if(window.chrome) {
                         setTimeout(function() {
                             chromeGetStats().then(displayReport);
