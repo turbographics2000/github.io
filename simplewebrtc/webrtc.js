@@ -38,7 +38,7 @@ function addStream() {
             }
         })
         .then(stream => {
-            appendVideo('self', stream);
+            appendVideo('selfStream', stream);
             if(pc.addStream) {
                 pc.addStream(stream);
             } else {
@@ -69,15 +69,15 @@ function start(flg) {
     };
     pc.ontrack = evt => {
         console.log(evt.streams);
-        if(!window['remote' + evt.streams[0].id]) {
-            appendVideo('remote', evt.streams[0]);
+        if(!window['remoteStream' + evt.streams[0].id]) {
+            appendVideo('remoteStream', evt.streams[0]);
         }
     };
     pc.onaddstream = evt => {
-        appendVideo('remote', evt.stream);
+        appendVideo('remoteStream', evt.stream);
     }
     pc.onremovestream = evt => {
-        removeVideo('remote', evt.stream);
+        removeVideo('remoteStream', evt.stream);
     }
     addStream();
 }
