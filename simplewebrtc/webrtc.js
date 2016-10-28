@@ -67,14 +67,16 @@ function start(flg) {
                 console.log(error.name + ": " + error.message);
             });
     };
-    pc.ontrack = evt => {
-        console.log(evt.streams);
-        if(!window['remoteStream' + evt.streams[0].id]) {
-            appendVideo('remoteStream', evt.streams[0]);
+    if(window.chrome) {
+        pc.onaddstream = evt => { // Firefox49において警告は出るものの有効である
+            appendVideo('remoteStream', evt.stream);
         }
-    };
-    pc.onaddstream = evt => {
-        appendVideo('remoteStream', evt.stream);
+    } else {
+        pc.ontrack = evt => {
+            if(!window['remoteStream' + evt.streams[0].id]) {
+                appendVideo('remoteStream', evt.streams[0]);
+            }
+        };
     }
     pc.onremovestream = evt => {
         removeVideo('remoteStream', evt.stream);
