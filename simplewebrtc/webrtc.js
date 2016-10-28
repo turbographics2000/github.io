@@ -86,7 +86,8 @@ signalingChannel.onmessage = function(evt) {
     if (!pc)
         start();
     let message = JSON.parse(evt.data);
-    if ('desc' in message) {
+    if (message.desc) {
+        let desc = message.desc;
         if (desc.type == "offer") {
             pc.setRemoteDescription(new RTCSessionDescription(desc))
                 .then(_ =>{
