@@ -116,7 +116,7 @@ signalingChannel.onmessage = function(evt) {
                         }, 1000);
                     } else {
                         setTimeout(function() {
-                            firefoxGetStats().then(displayReport);
+                            firefoxGetStats1().then(displayReport);
                         }, 1000);
                     }
                 });
