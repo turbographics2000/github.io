@@ -55,6 +55,9 @@ function addStream() {
 
 function start(flg) {
     pc = new RTCPeerConnection(configuration);
+    pc.oniceconnectionstatechange = evt => {
+        console.log('oniceconnectionstatechange', evt);
+    };
     pc.onicecandidate = evt => {
         if(evt.candidate)
             signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
