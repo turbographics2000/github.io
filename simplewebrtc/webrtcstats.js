@@ -59,8 +59,8 @@ function firefoxGetStats1(selector = null) {
     });
 }
 
-function firefoxGetStats2() {
-    return pc.getStats()
+function firefoxGetStats2(selector = null) {
+    return pc.getStats(selector)
         .then(response => {
             const report = {};
             for(stats of response) {
