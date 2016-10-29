@@ -132,3 +132,30 @@ function logError(error) {
     console.log(error.name + ": " + error.message);
 };
 
+function getCameraCapability() {
+    var videoInputs = [];
+    navigator.mediaDevices.enumerateDevices(devices => devices.filter(device => device.kind === 'videoinput'))
+        .then(videoInputs => {
+            gum(videoInputs, 0, 1, 1);
+        });
+}
+
+function gum(devices, idx, width, height) {
+    navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { min: 1, ideal: width, max: 10000},
+                height: { min: 1, ideal: height, max: 10000},
+                deviceId: devices[idx].deviceId
+            },
+            audio:false
+        }).then(stream => {
+            debugger;
+            var video = document.createElement('video');
+            video.onloadedmetadata = function() {
+                console.log(video.videoWidth, video.videoHeight);
+                video.srcObject = null;
+                video = null;
+            };
+            video.srcObject = stream;
+        });
+}
