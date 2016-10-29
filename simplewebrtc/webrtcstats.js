@@ -23,23 +23,21 @@ function WebRTCStats(peerConnections, options) {
 }
 
 function chromeGetStats() {
-    return new Promise(function(resolve, reject) {
-        pc.getStats(response => {
-            var report = {};
-            response.result().forEach(stats => {
-                var reportStats = {
-                    id: stats.id,
-                    timestamp: stats.timestamp,
-                    type: stats.type
-                };
-                stats.names().forEach(name => {
-                    reportStats[name] = stats.stat(name);
-                });
-                report[stats.type] = report[stats.type] || {};
-                report[stats.type][reportStats.id] = reportStats;
+    return pc.getStats(response => {
+        var report = {};
+        response.result().forEach(stats => {
+            var reportStats = {
+                id: stats.id,
+                timestamp: stats.timestamp,
+                type: stats.type
+            };
+            stats.names().forEach(name => {
+                reportStats[name] = stats.stat(name);
             });
-            resolve(report);
+            report[stats.type] = report[stats.type] || {};
+            report[stats.type][reportStats.id] = reportStats;
         });
+        return report;
     });
 }
 
