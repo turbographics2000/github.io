@@ -24,7 +24,6 @@ function WebRTCStats(peerConnections, options) {
 
 function chromeGetStats() {
     return new Promise(function(resolve, reject) {
-        // まだ、selector(MediaStreamTrack)を引数とするgetStats()は実装されていない(canaryにおいても)。
         pc.getStats(response => {
             var report = {};
             response.result().forEach(stats => {
@@ -78,7 +77,8 @@ function firefoxGetStats2() {
 }
 
 function displayReport(report) {
-    const container = document.body;
+    const container = document.createElement('div');
+    container.id='webrtcStatsContainer';
     const h1 = document.createElement('h1');
     h1.textContent = '統計情報';
     container.appendChild(h1);
@@ -130,4 +130,5 @@ function displayReport(report) {
             container.appendChild(table);
         }
     }
+    document.body.appendChild(container);
 }
