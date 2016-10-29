@@ -48,8 +48,9 @@ function firefoxGetStats1() {
     return pc.getStats(selfStreams.children[0].srcObject.getVideoTracks()[0], response => {
         const report = {};
         for(stats of response) {
-            report[stats.type] = report[stats.type] || {};
-            report[stats.type][stats.id] = stats;
+            // statsオブジェクトは["statsのId(文字列)", statsオブジェクト]という配列になっている
+            report[stats[1].type] = report[stats[1].type] || {};
+            report[stats[1].type][stats[0]] = stats[1];
         }
         return report;
     }, err => {
