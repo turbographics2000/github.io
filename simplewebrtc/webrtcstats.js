@@ -44,9 +44,9 @@ function chromeGetStats() {
     });
 }
 
-function firefoxGetStats1() {
+function firefoxGetStats1(selector = null) {
     return new Promise((resolve, reject) => {
-        pc.getStats(selfStreams.children[0].srcObject.getVideoTracks()[0], response => {
+        pc.getStats(selector, response => {
             const report = {};
             for(stats of response) {
                 // statsオブジェクトは["statsのId(文字列)", statsオブジェクト]という配列になっている
