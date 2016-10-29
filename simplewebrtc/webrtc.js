@@ -115,7 +115,9 @@ signalingChannel.onmessage = function(evt) {
                             chromeGetStats().then(displayReport);
                         }, 1000);
                     } else {
-                        firefoxGetStats();
+                        setTimeout(function() {
+                            firefoxGetStats().then(displayReport);
+                        }, 1000);
                     }
                 });
         } else

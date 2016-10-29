@@ -52,7 +52,7 @@ function firefoxGetStats() {
             report[stats[1].type][stats[0]] = stats[1];
         }
         return report;
-    })
+    });
 }
 
 function displayReport(report) {
