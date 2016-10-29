@@ -51,7 +51,7 @@ function firefoxGetStats1(selector = null) {
             for(stats of response) {
                 // statsオブジェクトは["statsのId(文字列)", statsオブジェクト]という配列になっている
                 // statsのtimestampプロパティはgetTime()と同等のNumber型となっている
-                stats[1].timestamp = new Date(stats[i].timestamp);
+                stats[1].timestamp = new Date(stats[1].timestamp);
                 report[stats[1].type] = report[stats[1].type] || {};
                 report[stats[1].type][stats[0]] = stats[1];
             }
