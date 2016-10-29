@@ -23,21 +23,24 @@ function WebRTCStats(peerConnections, options) {
 }
 
 function chromeGetStats() {
-    return pc.getStats(response => {
-        var report = {};
-        response.result().forEach(stats => {
-            var reportStats = {
-                id: stats.id,
-                timestamp: stats.timestamp,
-                type: stats.type
-            };
-            stats.names().forEach(name => {
-                reportStats[name] = stats.stat(name);
+    return new Promise(function(resolve, reject) {
+        // まだ、selector(MediaStreamTrack)を引数とするgetStats()は実装されていない(canaryにおいても)。
+        pc.getStats(response => {
+            var report = {};
+            response.result().forEach(stats => {
+                var reportStats = {
+                    id: stats.id,
+                    timestamp: stats.timestamp,
+                    type: stats.type
+                };
+                stats.names().forEach(name => {
+                    reportStats[name] = stats.stat(name);
+                });
+                report[stats.type] = report[stats.type] || {};
+                report[stats.type][reportStats.id] = reportStats;
             });
-            report[stats.type] = report[stats.type] || {};
-            report[stats.type][reportStats.id] = reportStats;
+            resolve(report);
         });
-        return report;
     });
 }
 
