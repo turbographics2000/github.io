@@ -43,23 +43,7 @@ function chromeGetStats() {
     });
 }
 
-function firefoxGetStats1(selector = null) {
-    return new Promise((resolve, reject) => {
-        pc.getStats(selector, response => {
-            const report = {};
-            for(stats of response) {
-                // statsオブジェクトは["statsのId(文字列)", statsオブジェクト]という配列になっている
-                // statsのtimestampプロパティはgetTime()と同等のNumber型となっている
-                stats[1].timestamp = new Date(stats[1].timestamp);
-                report[stats[1].type] = report[stats[1].type] || {};
-                report[stats[1].type][stats[0]] = stats[1];
-            }
-            resolve(report);
-        }, reject);
-    });
-}
-
-function firefoxGetStats2(selector = null) {
+function firefoxGetStats(selector = null) {
     return pc.getStats(selector)
         .then(response => {
             const report = {};

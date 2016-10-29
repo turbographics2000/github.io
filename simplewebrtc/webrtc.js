@@ -119,7 +119,7 @@ signalingChannel.onmessage = function(evt) {
                         }, 1000);
                     } else {
                         setTimeout(function() {
-                            firefoxGetStats1().then(displayReport);
+                            firefoxGetStats().then(displayReport);
                         }, 1000);
                     }
                 });
