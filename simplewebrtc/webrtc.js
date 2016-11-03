@@ -70,20 +70,24 @@ function start(flg) {
                 console.log(error.name + ": " + error.message);
             });
     };
-    if(window.chrome) {
-        pc.onaddstream = evt => { // Firefox49において警告は出るものの有効である
-            appendVideo('remoteStream', evt.stream);
-        }
-    } else {
+
+    // ontrackが実装されていればontrackで
+    // ontrackが実装されていなければonaddstreamでリモートストリームを追加
+    if('ontrack' in pc) {
         pc.ontrack = evt => {
             if(!window['remoteStream' + evt.streams[0].id]) {
                 appendVideo('remoteStream', evt.streams[0]);
             }
         };
+    } else {
+        pc.onaddstream = evt => { 
+            appendVideo('remoteStream', evt.stream);
+        }
     }
     pc.onremovestream = evt => {
         removeVideo('remoteStream', evt.stream);
     }
+    
     addStream();
 }
 
@@ -133,34 +137,3 @@ signalingChannel.onmessage = function(evt) {
     }
 };
 
-function logError(error) {
-    console.log(error.name + ": " + error.message);
-};
-
-function getCameraCapability() {
-    var videoInputs = [];
-    navigator.mediaDevices.enumerateDevices(devices => devices.filter(device => device.kind === 'videoinput'))
-        .then(videoInputs => {
-            gum(videoInputs, 0, 1, 1);
-        });
-}
-
-function gum(devices, idx, width, height) {
-    navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { min: 1, ideal: width, max: 10000},
-                height: { min: 1, ideal: height, max: 10000},
-                deviceId: devices[idx].deviceId
-            },
-            audio:false
-        }).then(stream => {
-            debugger;
-            var video = document.createElement('video');
-            video.onloadedmetadata = function() {
-                console.log(video.videoWidth, video.videoHeight);
-                video.srcObject = null;
-                video = null;
-            };
-            video.srcObject = stream;
-        });
-}
