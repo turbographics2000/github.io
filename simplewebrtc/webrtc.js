@@ -14,7 +14,7 @@ if(btnRemoveTrack) {
                 // RTCPeerConnectionからストリームを取得することができなくなる。
                 // そのため、自分でストリームを管理しなければならない。
                 if(localStreams) {
-                    var tracks = stream.getTracks();
+                    var tracks = localStreams[0].getTracks();
                     if(tracks.length) {
                         localStreams[0].removeTrack(tracks[0]);
                     }
