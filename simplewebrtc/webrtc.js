@@ -136,11 +136,11 @@ signalingChannel.onmessage = function(evt) {
                 .then(_ => {
                     if(window.chrome) {
                         setTimeout(function() {
-                            if(chromeGetStats) chromeGetStats().then(displayReport);
+                            if(window.chromeGetStats) chromeGetStats().then(displayReport);
                         }, 1000);
                     } else {
                         setTimeout(function() {
-                            if(firefoxGetStats) firefoxGetStats().then(displayReport);
+                            if(window.firefoxGetStats) firefoxGetStats().then(displayReport);
                         }, 1000);
                     }
                 });
