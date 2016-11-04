@@ -1,20 +1,35 @@
 const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
+let localStreams;
+let remoteStreams;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
 if(btnRemoveTrack) {
     btnRemoveTrack.onclick = function () {
         if(pc) {
-            var localStreams = pc.getLocalStreams();
-            if(localStreams.length) {
-                var stream = localStreams[0];
-                var tracks = stream.getTracks();
-                console.log('tracks', tracks);
-                if(tracks.length) {
-                    stream.removeTrack(tracks[0]);
-                    console.log('tracks', stream.getTracks());
+            if(pc.getSenders) {
+                // 新しい仕様ではRTCPeerConnectionではgetLocalStream()およびgetRemoteStream()が廃止されるため
+                // RTCPeerConnectionからストリームを取得することができなくなる。
+                // そのため、自分でストリームを管理しなければならない。
+                if(localStreams) {
+                    var tracks = stream.getTracks();
+                    if(tracks.length) {
+                        localStreams[0].removeTrack(tracks[0]);
+                    }
+                }
+                var senders = pc.getSenders();
+            } else {
+                var localStreams = pc.getLocalStreams();
+                if(localStreams.length) {
+                    var stream = localStreams[0];
+                    var tracks = stream.getTracks();
+                    console.log('tracks', tracks);
+                    if(tracks.length) {
+                        stream.removeTrack(tracks[0]);
+                        console.log('tracks', stream.getTracks());
+                    }
                 }
             }
         }
@@ -55,6 +70,8 @@ function addStream() {
         })
         .then(stream => {
             appendVideo('selfStream', stream);
+            localStreams = localStreams || [];
+            localStreams.push(stream);
             if(pc.addStream) {
                 pc.addStream(stream);
             } else {
