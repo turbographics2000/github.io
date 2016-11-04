@@ -8,29 +8,13 @@ window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConne
 btnConnect.onclick = start;
 if(btnRemoveTrack) {
     btnRemoveTrack.onclick = function () {
-        if(pc) {
-            if(pc.getSenders) {
-                // 新しい仕様ではRTCPeerConnectionではgetLocalStream()およびgetRemoteStream()が廃止されるため
-                // RTCPeerConnectionからストリームを取得することができなくなる。
-                // そのため、自分でストリームを管理しなければならない。
-                if(localStreams) {
-                    var tracks = localStreams[0].getTracks();
-                    if(tracks.length) {
-                        localStreams[0].removeTrack(tracks[0]);
-                    }
-                }
-                var senders = pc.getSenders();
-            } else {
-                var localStreams = pc.getLocalStreams();
-                if(localStreams.length) {
-                    var stream = localStreams[0];
-                    var tracks = stream.getTracks();
-                    console.log('tracks', tracks);
-                    if(tracks.length) {
-                        stream.removeTrack(tracks[0]);
-                        console.log('tracks', stream.getTracks());
-                    }
-                }
+        // 新しい仕様ではRTCPeerConnectionではgetLocalStream()およびgetRemoteStream()が廃止されるため
+        // RTCPeerConnectionからストリームを取得することができなくなる。
+        // そのため、自分でストリームを管理しなければならない。
+        if(localStreams) {
+            var tracks = localStreams[0].getTracks();
+            if(tracks.length) {
+                localStreams[0].removeTrack(tracks[0]);
             }
         }
     }
