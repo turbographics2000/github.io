@@ -1,7 +1,7 @@
 const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
-let localStreams;
+var localStreams = null;
 let remoteStreams;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
