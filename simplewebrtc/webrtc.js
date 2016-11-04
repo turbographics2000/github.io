@@ -29,7 +29,7 @@ function appendVideo(side, stream) {
 
 function removeVideo(side, stream) {
     var video = window[side + stream.id];
-    window[side + 'Streams'].removeChild(video);
+    window[side + 's'].removeChild(video);
 }
 
 function addStream() {
