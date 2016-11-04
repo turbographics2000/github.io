@@ -4,16 +4,18 @@ let pc;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
-btnRemoveTrack.onclick = function () {
-    if(pc) {
-        var localStreams = pc.getLocalStreams();
-        if(localStreams.length) {
-            var stream = localStreams[0];
-            var tracks = stream.getTracks();
-            console.log('tracks', tracks);
-            if(tracks.length) {
-                stream.removeTrack(tracks[0]);
-                console.log('tracks', stream.getTracks());
+if(btnRemoveTrack) {
+    btnRemoveTrack.onclick = function () {
+        if(pc) {
+            var localStreams = pc.getLocalStreams();
+            if(localStreams.length) {
+                var stream = localStreams[0];
+                var tracks = stream.getTracks();
+                console.log('tracks', tracks);
+                if(tracks.length) {
+                    stream.removeTrack(tracks[0]);
+                    console.log('tracks', stream.getTracks());
+                }
             }
         }
     }
@@ -134,11 +136,11 @@ signalingChannel.onmessage = function(evt) {
                 .then(_ => {
                     if(window.chrome) {
                         setTimeout(function() {
-                            chromeGetStats().then(displayReport);
+                            if(chromeGetStats) chromeGetStats().then(displayReport);
                         }, 1000);
                     } else {
                         setTimeout(function() {
-                            firefoxGetStats().then(displayReport);
+                            if(firefoxGetStats) firefoxGetStats().then(displayReport);
                         }, 1000);
                     }
                 });
