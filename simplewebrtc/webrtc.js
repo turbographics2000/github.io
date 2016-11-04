@@ -4,6 +4,20 @@ let pc;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
+btnRemoveTrack.onclick = function () {
+    if(pc) {
+        var localStreams = pc.getLocalStreams();
+        if(localStreams.length) {
+            var stream = localStreams[0];
+            var tracks = stream.getTracks();
+            console.log('tracks', tracks);
+            if(tracks.length) {
+                stream.removeTrack(tracks[0]);
+                console.log('tracks', stream.getTracks());
+            }
+        }
+    }
+}
 
 function appendVideo(side, stream) {
     var video = document.createElement('video');
@@ -63,6 +77,7 @@ function start(flg) {
             signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
     }
     pc.onnegotiationneeded = _ => {
+        console.log('onnegotiationneeded');
         pc.createOffer()
             .then(offer => pc.setLocalDescription(offer))
             .then(_ => signalingChannel.postMessage(JSON.stringify({ desc: pc.localDescription })))
@@ -80,14 +95,14 @@ function start(flg) {
             }
         };
     } else {
-        pc.onaddstream = evt => { 
+        pc.onaddstream = evt => {
             appendVideo('remoteStream', evt.stream);
         }
     }
     pc.onremovestream = evt => {
         removeVideo('remoteStream', evt.stream);
     }
-    
+
     addStream();
 }
 
