@@ -1,6 +1,7 @@
 const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
+let localStreams = null;
 let senders = null;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
@@ -55,7 +56,8 @@ function addStream() {
         })
         .then(stream => {
             appendVideo('selfStream', stream);
-            senders = senders || {};
+            localStreams = localStreams || [];
+            localStreams.push(stream);
             if(pc.addStream) {
                 pc.addStream(stream);
             } else {
