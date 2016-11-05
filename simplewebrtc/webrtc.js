@@ -1,8 +1,7 @@
 const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
-var localStreams = null;
-let remoteStreams;
+let senders = null;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
@@ -14,7 +13,9 @@ if(btnRemoveTrack) {
         if(localStreams) {
             var tracks = localStreams[0].getTracks();
             if(tracks.length) {
+                //pc.removeTrack(tracks[0], localStreams[0]);
                 localStreams[0].removeTrack(tracks[0]);
+                pc.onnegotiationneeded();
             }
         }
     }
@@ -54,8 +55,7 @@ function addStream() {
         })
         .then(stream => {
             appendVideo('selfStream', stream);
-            localStreams = localStreams || [];
-            localStreams.push(stream);
+            senders = senders || {};
             if(pc.addStream) {
                 pc.addStream(stream);
             } else {
