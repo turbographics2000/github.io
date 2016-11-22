@@ -88,7 +88,7 @@ WebRTCStats.prototype.emit = function(eventName, ...args) {
  * @param {any} peerConnections
  * @returns {peerConnections} peerConnections引数がRTCPeerConnection型の場合は、その値を含む
  *     オブジェクトに変換して返します。peerConnections引数がRTCPeerConnection型を含むオブジェクトの場合はそのまま返します。
- *     それ以外の場合はnullを返します。 
+ *     それ以外の場合はnullを返します。
  */
 WebRTCStats.prototype.checkPeerConnections = function(peerConnections) {
     if(typeof peerConnections === 'object') {
@@ -220,7 +220,7 @@ webrtcStats.prototype.oniceconnectionstatechange = function(evt) {
 
 /**
  * ontrackイベントハンドラー
- * 
+ *
  * @param {any} evt
  */
 webrtcStats.prototype.ontrack = function(evt) {
@@ -229,7 +229,7 @@ webrtcStats.prototype.ontrack = function(evt) {
 
 /**
  * onaddstreamイベントハンドラー
- * 
+ *
  * @param {any} evt
  */
 webrtcStats.prototype.onaddstream = function(evt) {
