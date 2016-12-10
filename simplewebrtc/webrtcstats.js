@@ -210,7 +210,7 @@ WebRTCStats.prototype.onicecandidate = function(evt) {
  *
  * @param {any} evt
  */
-webrtcStats.prototype.oniceconnectionstatechange = function(evt) {
+WebRTCStats.prototype.oniceconnectionstatechange = function(evt) {
     this.log.push({
         logType: 'iceconnectionState',
         timestamp: new Date(),
@@ -223,7 +223,7 @@ webrtcStats.prototype.oniceconnectionstatechange = function(evt) {
  *
  * @param {any} evt
  */
-webrtcStats.prototype.ontrack = function(evt) {
+WebRTCStats.prototype.ontrack = function(evt) {
 
 }
 
@@ -232,7 +232,7 @@ webrtcStats.prototype.ontrack = function(evt) {
  *
  * @param {any} evt
  */
-webrtcStats.prototype.onaddstream = function(evt) {
+WebRTCStats.prototype.onaddstream = function(evt) {
 
 }
 

@@ -1,3 +1,4 @@
+window.BroadcastChannel = window.BroadcastChannel || function() {};
 const signalingChannel = new BroadcastChannel('webrtc-getstats-test');
 const configuration = { "iceServers": [{ "urls": "stun:stun.l.google.com:19302" }] };
 let pc;
@@ -6,14 +7,14 @@ let senders = null;
 
 window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
 btnConnect.onclick = start;
-if(btnRemoveTrack) {
-    btnRemoveTrack.onclick = function () {
+if (window.btnRemoveTrack) {
+    btnRemoveTrack.onclick = function() {
         // 新しい仕様ではRTCPeerConnectionではgetLocalStream()およびgetRemoteStream()が廃止されるため
         // RTCPeerConnectionからストリームを取得することができなくなる。
         // そのため、自分でストリームを管理しなければならない。
-        if(localStreams) {
+        if (localStreams) {
             var tracks = localStreams[0].getTracks();
-            if(tracks.length) {
+            if (tracks.length) {
                 //pc.removeTrack(tracks[0], localStreams[0]);
                 localStreams[0].removeTrack(tracks[0]);
                 pc.onnegotiationneeded();
@@ -26,7 +27,9 @@ function appendVideo(side, stream) {
     var video = document.createElement('video');
     video.id = side + stream.id;
     window[side + 's'].appendChild(video);
+    video.muted = true;
     video.srcObject = stream;
+    video.controls = true;
     video.play();
 };
 
@@ -36,40 +39,29 @@ function removeVideo(side, stream) {
 }
 
 function addStream() {
-    if(selfStreams.children.length >= 3) return;
+    if (selfStreams.children.length >= 3) return;
     navigator.mediaDevices.getUserMedia({
-            audio: false,
-            // audio: {
-            //     googEchoCancellation: true,
-            //     googAutoGainControl: true,
-            //     googNoizeSuppression: true,
-            //     googHighpassFilter: true,
-            //     googNoizeSuppression2: true,
-            //     googEchoCancellation2: true,
-            //     googAutoGainControl2: true
-            // },
-            video: true/*{
-                width: {ideal: 320},
-                height: {ideal: 240},
-                frameRate: {min: 1, max: 15}
-            }*/
-        })
-        .then(stream => {
-            appendVideo('selfStream', stream);
-            localStreams = localStreams || [];
-            localStreams.push(stream);
-            if(pc.addStream) {
-                pc.addStream(stream);
-            } else {
-                if(stream.getAudioTracks().length)
-                    pc.addTrack(stream.getAudioTracks()[0], stream);
-                if(stream.getVideoTracks().length)
-                    pc.addTrack(stream.getVideoTracks()[0], stream);
+        audio: true,
+        video: true
+    }).then(stream => {
+        appendVideo('selfStream', stream);
+        localStreams = localStreams || [];
+        localStreams.push(stream);
+        if (pc.addTrack) {
+            if (stream.getAudioTracks().length) {
+                console.log('addAudioTrack');
+                pc.addTrack(stream.getAudioTracks()[0], stream);
             }
-        })
-        .catch(error => {
-            console.log(error.name + ": " + error.message);
-        });
+            if (stream.getVideoTracks().length) {
+                console.log('addVideoTrack');
+                pc.addTrack(stream.getVideoTracks()[0], stream);
+            }
+        } else {
+            pc.addStream(stream);
+        }
+    }).catch(error => {
+        console.log(error.name + ": " + error.message);
+    });
 }
 
 function start(flg) {
@@ -78,7 +70,7 @@ function start(flg) {
         console.log('oniceconnectionstatechange', evt);
     };
     pc.onicecandidate = evt => {
-        if(evt.candidate)
+        if (evt.candidate)
             signalingChannel.postMessage(JSON.stringify({ candidate: evt.candidate }));
     }
     pc.onnegotiationneeded = _ => {
@@ -93,9 +85,9 @@ function start(flg) {
 
     // ontrackが実装されていればontrackで
     // ontrackが実装されていなければonaddstreamでリモートストリームを追加
-    if('ontrack' in pc) {
+    if ('ontrack' in pc) {
         pc.ontrack = evt => {
-            if(!window['remoteStream' + evt.streams[0].id]) {
+            if (!window['remoteStream' + evt.streams[0].id]) {
                 appendVideo('remoteStream', evt.streams[0]);
             }
         };
@@ -119,7 +111,7 @@ signalingChannel.onmessage = function(evt) {
         let desc = message.desc;
         if (desc.type == "offer") {
             pc.setRemoteDescription(new RTCSessionDescription(desc))
-                .then(_ =>{
+                .then(_ => {
                     return pc.createAnswer();
                 })
                 .then(answer => {
@@ -137,13 +129,13 @@ signalingChannel.onmessage = function(evt) {
                     console.log(error.name + ": " + error.message);
                 })
                 .then(_ => {
-                    if(window.chrome) {
+                    if (window.chrome) {
                         setTimeout(function() {
-                            if(window.chromeGetStats) chromeGetStats().then(displayReport);
+                            if (window.chromeGetStats) chromeGetStats().then(displayReport);
                         }, 1000);
                     } else {
                         setTimeout(function() {
-                            if(window.firefoxGetStats) firefoxGetStats().then(displayReport);
+                            if (window.firefoxGetStats) firefoxGetStats().then(displayReport);
                         }, 1000);
                     }
                 });
@@ -156,4 +148,3 @@ signalingChannel.onmessage = function(evt) {
             });
     }
 };
-
